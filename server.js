@@ -4,34 +4,51 @@ import { connectDB } from "./config/db.js";
 import foodRouter from "./routes/foodRoute.js";
 import userRouter from "./routes/userRoute.js";
 import cartRouter from "./routes/cartRoute.js";
-import 'dotenv/config';
 import orderRouter from "./routes/orderRoutes.js";
+import dotenv from 'dotenv';
 
+// Load environment variables
+dotenv.config();
 
-// app config
+// App configuration
 const app = express();
-const port = 4000
+const port = process.env.PORT || 4000;
 
-//middleware
-app.use(express.json())
-app.use(cors())
+// Middleware
+app.use(express.json());
+app.use(cors({
+    origin: process.env.CLIENT_URL || "*"
+}));
 
-//db connection
+// Connect to the database
 connectDB();
 
-// api endpoints
-app.use("/api/food",foodRouter)
-app.use("/images",express.static('uploads'))
-app.use("/api/user",userRouter)
-app.use("/api/cart",cartRouter)
-app.use("/api/order",orderRouter)
+// API endpoints
+app.use("/api/food", foodRouter);
+app.use("/images", express.static('uploads'));
+app.use("/api/user", userRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/order", orderRouter);
 
-
-
-app.get("/",(req,res)=>{
-res.send("API Working");
+app.get("/", (req, res) => {
+    res.send("API Working");
 });
 
-app.listen(port,()=>{
-    console.log(`Server Started on http://localhost:${port}`)
-})
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: "Something went wrong!" });
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server Started on http://localhost:${port}`);
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+    // console.log('Gracefully shutting down...');
+    mongoose.connection.close(() => {
+        process.exit(0);
+    });
+});
