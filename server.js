@@ -43,7 +43,6 @@ app.listen(port);
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-    // console.log('Gracefully shutting down...');
     mongoose.connection.close(() => {
         process.exit(0);
     });
