@@ -39,9 +39,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(port, () => {
-    console.log(`Server Started on http://localhost:${port}`);
-});
+app.listen(port);
 
 // Graceful shutdown
 process.on('SIGINT', () => {
