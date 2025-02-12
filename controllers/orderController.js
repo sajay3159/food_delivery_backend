@@ -6,7 +6,7 @@ dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const frontend_url = "http://localhost:5173"
+const frontend_url = "https://food-delivery-frontend-2pnl.onrender.com"
 
 // placing user order for frontend
 const placeOrder = async (req, res) => {
